@@ -146,8 +146,9 @@ abstract class Agent
     PVector steering;
     PVector desired = PVector.sub(m_position, target);
     float distance = desired.mag();
-    if(distance > 0 && distance < m_maxLookDistance)
+    if(distance > 0.01 && distance < m_maxLookDistance)
     {
+      println(distance);
       mustFlee = true;
       desired.setMag(m_maxSpeed);
       steering = PVector.sub(desired, m_velocity);
@@ -184,14 +185,43 @@ abstract class Agent
     //an amount determined by their velocity
     aVel.setMag(10); //how far ahead are we looking
     PVector predictedLoc = PVector.add(a.m_position, aVel);
-    return flee(predictedLoc);
+    if(this != a)
+      return flee(predictedLoc);
+    else
+      return false;
   }
   
   ////////////////////////////////////////////////////////////////////
-//  void follow(Path p)
-//  {
+  void follow(Path p)
+  {
+    PVector predict = m_velocity.get();
+    predict.setMag(25);
+    PVector predictLoc = PVector.add(m_position, predict);
     
-//  }
+    PVector a = p.m_begin;
+    PVector b = p.m_end;
+    PVector normalPoint = getNormalPoint(predictLoc, a, b);
+    
+    PVector dir = PVector.sub(b, a);
+    dir.setMag(10);
+    PVector target = PVector.add(normalPoint, dir);
+    
+    float dist = PVector.dist(normalPoint, predictLoc);
+    if (dist > p.m_radius)
+    {
+      seek(target);
+    }
+  }
+  
+  ////////////////////////////////////////////////////////////////////
+  PVector getNormalPoint(PVector point, PVector lineStart, PVector lineEnd)
+  {
+    PVector startToPoint = PVector.sub(point, lineStart);
+    PVector line = PVector.sub(lineEnd, lineStart);
+    line.normalize();
+    line.mult(startToPoint.dot(line));
+    return PVector.add(lineStart, line);
+  }
   
   ////////////////////////////////////////////////////////////////////
   void noiseWander()
