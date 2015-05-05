@@ -1,5 +1,6 @@
+
 //Tracker is mainly used to either flee or seek some PVector, green light shows its close to and traveling toward
-//                                                             red light shows its too close to a predator and trying to move in the opposite direction
+//   red light shows its too close to a predator and trying to move in the opposite direction
 class Tracker extends Mover
 {
   float radius, sight, red, green, blue;

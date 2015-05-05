@@ -4,7 +4,9 @@ class Ubo extends Mover
     float red; 
     float green; 
     float blue;
-  
+    boolean isDead;
+    int hits = 0;
+    
     Ubo(float xCoordinate, float yCoordinate)
     {
       super(xCoordinate, yCoordinate);
@@ -15,7 +17,7 @@ class Ubo extends Mover
     
     void update()
     {
-      super.update();
+        super.update();
     }
     
     void construct()
@@ -68,9 +70,33 @@ class Ubo extends Mover
             // diff.div(distance);
             PVector steer = PVector.sub(diff,velocity);
             applyForce(steer);
+            hits++;
+            if(hits == 3)
+              isDead = true;
           }
     
        }
+   }
+   
+   void avoid(PVector block)
+   {
+    float desiredSeperation = 20;
+    float distance = PVector.dist(location, block);
+     if (distance > 0 && distance < desiredSeperation)
+     {
+       PVector target = block.get();
+       PVector desired = PVector.sub(location, target);
+       desired.normalize();
+       desired.mult(2);
+       PVector steer = PVector.sub(desired, velocity);
+       steer.limit(maxForce);
+       applyForce(steer);
+     }
+   }
+   
+   boolean isDead()
+   {
+     return isDead;
    }
 }
 

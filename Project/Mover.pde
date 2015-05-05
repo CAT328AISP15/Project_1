@@ -8,13 +8,14 @@ class Mover implements SuperMover
     PVector desired;
     float mass;
     float maxForce, maxSpeed;
+   
 
     Mover(float xCoordinate, float yCoordinate)
     {
       location = new PVector(xCoordinate, yCoordinate);
       acceleration = new PVector(0, 0);
       velocity = new PVector(0.50, 0);
-      mass = 1;
+      mass =  1;
       maxForce = .4;
       maxSpeed = 4;
     }
@@ -37,7 +38,7 @@ class Mover implements SuperMover
        popMatrix();
     }
    
-   void checkedges() //passes an edge, goes to the other (like mario)
+   void checkedges() //bumps against edges
    {
      if (location.x > width)
       {
@@ -52,14 +53,18 @@ class Mover implements SuperMover
         location.x = 0;
       }
         
-     if (location.y > height)
+     if (location.y > 700)
       { 
         velocity.y *= -1;
         velocity.y += 0.09;
-        location.y = height;
+        location.y = 700;
       }
-     else if (location.y < 0) 
-        location.y = height;
+      if (location.y < 0)
+      {
+       velocity.y *= -1;
+       velocity.y -= 0.003;
+       location.y = 0;
+      }
    }
    
    void applyForce(PVector force)
